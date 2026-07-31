@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Deeds — the possessive case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky-top:#a7cee7;
+  --sky-mid:#c9e3f4;
+  --sky-low:#e9f4fb;
+  --cloud:#ffffff;
+  --ink:#33495c;
+  --ink-soft:#6a8298;
+  --halo:#d9b268;
+  --halo-soft:#f0dcae;
+  --recorded:#93a7b8;
+  --display:'Marcellus',"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --body:'Alegreya Sans',"Segoe UI",Avenir,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100%;
+  font-family:var(--body);
+  color:var(--ink);
+  background:linear-gradient(to bottom,var(--sky-top) 0%,var(--sky-mid) 45%,var(--sky-low) 100%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- moving sky ---------- */
+#sky{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.cloud{
+  position:absolute;
+  background:radial-gradient(closest-side,rgba(255,255,255,.95),rgba(255,255,255,.55) 60%,rgba(255,255,255,0) 100%);
+  filter:blur(6px);
+  will-change:transform;
+}
+.cloud b{
+  position:absolute;
+  background:radial-gradient(closest-side,rgba(255,255,255,.9),rgba(255,255,255,0));
+  border-radius:50%;
+}
+@keyframes drift{from{transform:translateX(-40vw)}to{transform:translateX(130vw)}}
+
+/* ---------- falling feathers ---------- */
+#featherfall{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:60}
+.fall{position:absolute;top:-30vh;will-change:transform;animation:descend linear forwards}
+.sway{display:block;will-change:transform;animation:sway ease-in-out infinite alternate}
+.fall img{display:block;filter:drop-shadow(0 8px 14px rgba(80,110,135,.18))}
+@keyframes descend{from{transform:translateY(-10vh)}to{transform:translateY(125vh)}}
+@keyframes sway{
+  from{transform:translateX(-46px) rotate(-14deg)}
+  to{transform:translateX(46px) rotate(15deg)}
+}
+
+/* ---------- page ---------- */
+.wrap{position:relative;z-index:5;max-width:960px;margin:0 auto;padding:46px 20px 90px}
+
+header{text-align:center;margin-bottom:34px}
+h1{
+  font-family:var(--display);
+  font-weight:400;
+  font-size:clamp(2.5rem,7vw,4.3rem);
+  letter-spacing:.06em;
+  margin:0 0 2px;
+  color:#2c4257;
+  text-shadow:0 1px 0 rgba(255,255,255,.85);
+}
+.rule{
+  width:132px;height:1px;margin:14px auto 16px;
+  background:linear-gradient(to right,transparent,var(--halo),transparent);
+}
+.task{
+  font-size:clamp(1rem,2.5vw,1.16rem);
+  line-height:1.6;
+  max-width:34em;margin:0 auto;
+  color:#3d5468;
+}
+.task em{font-style:italic;color:#2c4257}
+
+/* ---------- tally ---------- */
+.tally{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:22px;padding:8px 18px;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:999px;
+  font-size:.94rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);
+  backdrop-filter:blur(4px);
+}
+.tally strong{font-family:var(--display);font-size:1.24rem;color:var(--ink);letter-spacing:.02em}
+.tally svg{width:17px;height:17px;fill:none;stroke:var(--halo);stroke-width:1.5}
+
+/* ---------- deed cards ---------- */
+ol{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.deed{
+  position:relative;
+  background:rgba(255,255,255,.60);
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:22px;
+  padding:22px 24px 20px 60px;
+  box-shadow:0 10px 26px rgba(97,132,163,.13);
+  backdrop-filter:blur(7px);
+  transition:background .5s ease,box-shadow .5s ease,border-color .5s ease;
+}
+.num{
+  position:absolute;left:22px;top:22px;
+  font-family:var(--display);font-size:1.06rem;
+  color:var(--ink-soft);
+}
+.sentence{font-size:clamp(1.14rem,3vw,1.36rem);line-height:2.05}
+.hint{
+  display:block;margin-top:.3em;
+  font-style:italic;color:var(--ink-soft);
+  font-size:clamp(1.6rem,4.8vw,2.2rem);
+  line-height:1.35;
+}
+
+/* the gap */
+.gap{
+  font-family:var(--body);
+  font-size:1em;font-weight:500;
+  color:var(--ink);
+  text-align:center;
+  min-width:7ch;
+  padding:1px 6px 3px;
+  margin:0 2px;
+  border:none;
+  border-bottom:1.6px solid #8fabc2;
+  background:rgba(255,255,255,.5);
+  border-radius:4px 4px 0 0;
+  outline:none;
+  transition:border-color .25s,background .25s;
+}
+.gap::placeholder{color:#a9bccd}
+.gap:focus{border-bottom-color:var(--halo);background:rgba(255,255,255,.85)}
+.gap:disabled{opacity:1;cursor:default}
+#sizer{position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0;font-weight:500}
+
+.actions{margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-height:38px}
+.do{
+  font-family:var(--body);font-size:.94rem;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:#3d5468;
+  background:rgba(255,255,255,.8);
+  border:1px solid rgba(140,172,196,.55);
+  border-radius:999px;
+  padding:9px 22px;cursor:pointer;
+  transition:background .2s,border-color .2s,transform .12s;
+}
+.do:hover{background:#fff;border-color:var(--halo)}
+.do:active{transform:translateY(1px)}
+.do:focus-visible,.gap:focus-visible,.restart:focus-visible{outline:2px solid var(--halo);outline-offset:3px}
+
+.verdict{font-size:1rem;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.verdict svg{width:18px;height:18px;fill:none;stroke-width:1.5}
+
+/* locked states */
+.deed.done{background:rgba(255,255,255,.78);border-color:var(--halo-soft);box-shadow:0 10px 30px rgba(198,166,101,.2)}
+.deed.done .gap{border-bottom-color:var(--halo);color:#7a5f24;background:rgba(255,251,240,.9)}
+.deed.done .verdict{color:#8a6a26}
+.deed.done .verdict svg{stroke:var(--halo)}
+
+.deed.missed{background:rgba(255,255,255,.42);box-shadow:0 6px 16px rgba(97,132,163,.09)}
+.deed.missed .sentence{color:var(--recorded)}
+.deed.missed .num{color:#a9bccd}
+.deed.missed .gap{border-bottom-color:#b9c8d5;color:var(--recorded);background:transparent;text-decoration:line-through}
+.deed.missed .verdict{color:var(--recorded)}
+.deed.missed .verdict svg{stroke:var(--recorded)}
+
+/* ---------- the angel appears ---------- */
+#finale{
+  position:fixed;inset:0;z-index:80;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:24px;
+  background:rgba(214,234,247,.88);
+  backdrop-filter:blur(11px);
+  -webkit-backdrop-filter:blur(11px);
+}
+#finale.on{display:flex;animation:veil 1.4s ease both}
+@keyframes veil{from{opacity:0}to{opacity:1}}
+
+#apparition{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  width:100%;
+}
+
+#angelImg,#angelAnim{display:none}
+#angelImg{
+  max-height:min(70vh,620px);max-width:min(90vw,760px);
+  height:auto;width:auto;
+}
+#angelAnim{
+  position:fixed;inset:0;                 /* she fills the whole screen */
+  width:100vw;height:100vh;max-width:none;
+  object-fit:contain;
+}
+
+.appear{display:block!important;animation:appear 1.9s cubic-bezier(.22,.7,.3,1) both}
+.evaporate{display:block!important;animation:evaporate 2.1s ease-in both}
+@keyframes appear{
+  from{opacity:0;transform:scale(.5);filter:blur(16px)}
+  70% {opacity:.94;transform:scale(.97);filter:blur(2px)}
+  to  {opacity:1;transform:scale(1);filter:blur(0)}
+}
+@keyframes evaporate{
+  from{opacity:1;transform:scale(1);filter:blur(0)}
+  40% {opacity:.5;transform:scale(1.06);filter:blur(6px)}
+  to  {opacity:0;transform:scale(1.2);filter:blur(20px)}
+}
+
+#closing{display:none;text-align:center;max-width:26em}
+#closing.on{display:block;animation:rise 1.5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#closingLine{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(1.7rem,5.4vw,3.05rem);
+  line-height:1.35;letter-spacing:.02em;
+  color:#2c4257;margin:0;
+  text-shadow:0 1px 0 rgba(255,255,255,.9);
+}
+.restart{
+  margin-top:38px;font-family:var(--body);font-size:1rem;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase;color:#3d5468;
+  background:rgba(255,255,255,.88);border:1px solid rgba(140,172,196,.6);
+  border-radius:999px;padding:13px 32px;cursor:pointer;
+  transition:background .2s,border-color .2s;
+}
+.restart:hover{background:#fff;border-color:var(--halo)}
+.restart:focus-visible{outline:2px solid var(--halo);outline-offset:3px}
+
+#unmute{
+  position:absolute;left:50%;bottom:7vh;transform:translateX(-50%);
+  display:none;font-family:var(--body);font-size:.86rem;letter-spacing:.08em;
+  text-transform:uppercase;color:#3d5468;background:rgba(255,255,255,.92);
+  border:1px solid rgba(140,172,196,.6);border-radius:999px;padding:8px 18px;cursor:pointer;
+  z-index:3;
+}
+#unmute.on{display:block}
+
+@media (max-width:560px){
+  .wrap{padding:30px 14px 70px}
+  .deed{padding:18px 16px 16px 46px;border-radius:18px}
+  .num{left:16px;top:18px}
+  .sentence{line-height:2.15}
+}
+@media (prefers-reduced-motion:reduce){
+  .cloud{animation:none!important}
+  .fall,.sway{animation-duration:.001s!important}
+  #closing.on,#finale.on{animation:none}
+  .appear{animation:fadein .6s ease both}
+  .evaporate{animation:fadeout .6s ease both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @keyframes fadeout{from{opacity:1}to{opacity:0}}
+}
+</style>
+</head>
+<body>
+
+<div id="sky" aria-hidden="true"></div>
+<div id="featherfall" aria-hidden="true"></div>
+<span id="sizer"></span>
+<audio id="chime" src="assets/chime.mp3" preload="auto"></audio>
+
+<div class="wrap">
+  <header>
+    <h1>Good Deeds</h1>
+    <div class="rule"></div>
+    <p class="task">The angel has more errands than wings. Fill each gap in the possessive case &mdash; every sentence you get right is one good deed done, and one feather drifting down to thank you.</p>
+    <div class="tally">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3c-6 1-11 5-13 11l-2 7M18 5c1 6-3 11-9 12"/></svg>
+      <span>Feathers</span> <strong id="count">0</strong> <span>/ 12</span>
+    </div>
+  </header>
+
+  <ol id="list"></ol>
+
+  <section id="finale" aria-live="polite">
+    <div id="apparition">
+      <img id="angelImg" alt="">
+      <img id="angelAnim" alt="">
+    </div>
+    <audio id="angelVoice" src="assets/angel-voice.m4a" preload="auto"></audio>
+    <button id="unmute" type="button">Turn on the sound</button>
+    <div id="closing">
+      <p id="closingLine"></p>
+      <button class="restart" id="restart" type="button">Try to help again</button>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ---------------- the twelve deeds ---------------- */
+const DEEDS = [
+  { before:"How about helping fix",              after:"flat tyre so he isn't stranded in the rain?",        hint:"John",                                        answers:["john's"] },
+  { before:"It's time to help bail water out of",after:"flooded basement!",                                  hint:"Jane and Ben, they have common basement",      answers:["jane and ben's"] },
+  { before:"I need to help find",                after:"lost house keys in the dark!",                       hint:"Mary",                                        answers:["mary's"] },
+  { before:"Why not help search for",            after:"lost luggage at the train station?",                 hint:"Tom and Anna, each has their own luggage",     answers:["tom's and anna's"] },
+  { before:"Let's help repair",                  after:"storm-damaged roof before nightfall.",               hint:"Sam and Lily, they share one house",           answers:["sam and lily's"] },
+  { before:"Let's help water the flowers in the",after:"garden before the sun gets too high!",               hint:"women",                                       answers:["women's"] },
+  { before:"How about helping bake a pie at the",after:"for the charity sale today?",                        hint:"baker, a place",                              answers:["baker's"] },
+  { before:"I need to help rebuild the",         after:"collapsed tents before the storm hits!",             hint:"tourists",                                    answers:["tourists'"] },
+  { before:"Why not help search for the",        after:"lost puppy in the park?",                            hint:"children",                                    answers:["children's"] },
+  { before:"It would be great to help rescue the",after:"trapped kitten from high up in the tree!",          hint:"cat",                                         answers:["cat's"] },
+  { before:"It would be great to help fix",      after:"broken heaters on this freezing day.",               hint:"Mike and Sarah, each has their own heater",   answers:["mike's and sarah's"] },
+  { before:"It's time to help clear the",        after:"driveway after the huge snowstorm!",                 hint:"neighbours",                                  answers:["neighbours'","neighbors'"] }
+];
+
+const FEATHERS = ["assets/feather-1.png","assets/feather-2.png"];
+let featherTurn = 0;
+let earned = 0, recorded = 0;
+
+/* ---------------- sky ---------------- */
+(function buildSky(){
+  const sky = document.getElementById('sky');
+  const specs = [
+    {w:520,h:170,top:6,  dur:104, delay:-20, o:.85},
+    {w:330,h:110,top:22, dur:78,  delay:-52, o:.7},
+    {w:640,h:200,top:38, dur:132, delay:-8,  o:.6},
+    {w:400,h:130,top:56, dur:92,  delay:-66, o:.7},
+    {w:280,h:96, top:72, dur:70,  delay:-34, o:.55},
+    {w:560,h:180,top:86, dur:118, delay:-90, o:.5}
+  ];
+  specs.forEach(s=>{
+    const c = document.createElement('div');
+    c.className = 'cloud';
+    c.style.cssText = `width:${s.w}px;height:${s.h}px;top:${s.top}%;left:0;opacity:${s.o};`+
+      `animation:drift ${s.dur}s linear ${s.delay}s infinite;`;
+    for(let i=0;i<3;i++){
+      const b = document.createElement('b');
+      const bw = s.w*(0.34+Math.random()*0.3);
+      b.style.cssText = `width:${bw}px;height:${bw*0.62}px;left:${Math.random()*(s.w-bw)}px;`+
+        `top:${Math.random()*(s.h*0.45)}px;`;
+      c.appendChild(b);
+    }
+    sky.appendChild(c);
+  });
+})();
+
+/* ---------------- build the list ---------------- */
+const list = document.getElementById('list');
+const sizer = document.getElementById('sizer');
+
+DEEDS.forEach((d,i)=>{
+  const li = document.createElement('li');
+  li.className = 'deed';
+  li.innerHTML =
+    `<span class="num">${i+1}</span>
+     <p class="sentence">${d.before}
+       <input class="gap" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+              aria-label="Sentence ${i+1}: the possessive form of ${d.hint}">
+       ${d.after}<span class="hint">(${d.hint})</span></p>
+     <div class="actions"><button class="do" type="button">Do this deed</button></div>`;
+  list.appendChild(li);
+
+  const input  = li.querySelector('.gap');
+  const button = li.querySelector('.do');
+
+  const fit = ()=>{
+    const cs = getComputedStyle(input);
+    sizer.style.font = cs.font;
+    sizer.style.letterSpacing = cs.letterSpacing;
+    sizer.textContent = input.value || '';
+    const w = sizer.offsetWidth + 22;
+    input.style.width = Math.max(w, 92) + 'px';
+  };
+  fit();
+  input.addEventListener('input', fit);
+  input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){ e.preventDefault(); submit(); }
+  });
+  button.addEventListener('click', submit);
+
+  function submit(){
+    if(li.dataset.locked) return;
+    const given = input.value.trim();
+    if(!given){ input.focus(); return; }
+    li.dataset.locked = '1';
+    input.disabled = true;
+    const ok = d.answers.includes(normalise(given));
+    li.classList.add(ok ? 'done' : 'missed');
+    button.remove();
+    li.querySelector('.actions').appendChild(verdict(ok));
+    recorded++;
+    if(ok){ earned++; document.getElementById('count').textContent = earned; dropFeather(); playChime(); }
+    if(recorded === DEEDS.length) finish();
+  }
+});
+
+/* ---------------- answer checking ---------------- */
+function normalise(s){
+  return s.toLowerCase()
+          .replace(/[\u2018\u2019\u02BC\u0060\u00B4]/g,"'")   /* any apostrophe -> ' */
+          .replace(/\s+/g,' ')
+          .replace(/^the\s+/,'')                              /* tolerate a repeated "the" */
+          .trim();
+}
+
+function verdict(ok){
+  const el = document.createElement('span');
+  el.className = 'verdict';
+  el.innerHTML = ok
+    ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3c-6 1-11 5-13 11l-2 7M18 5c1 6-3 11-9 12"/></svg>A good deed done`
+    : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>Answer recorded`;
+  return el;
+}
+
+/* ---------------- reward: sound + feather ---------------- */
+function playChime(){
+  const a = document.getElementById('chime');
+  try{
+    a.currentTime = 0; a.volume = 1;
+    a.play().catch(()=>{});
+    clearTimeout(a._fade);
+    a._fade = setTimeout(()=>{
+      const t = setInterval(()=>{
+        a.volume = Math.max(0, a.volume - 0.08);
+        if(a.volume <= 0.01){ clearInterval(t); a.pause(); }
+      }, 60);
+    }, 3000);
+  }catch(e){}
+}
+
+function dropFeather(){
+  const src = FEATHERS[featherTurn % FEATHERS.length];
+  featherTurn++;
+  const vertical = src.endsWith('feather-2.png');
+
+  const fall = document.createElement('div');
+  fall.className = 'fall';
+  const sway = document.createElement('span');
+  sway.className = 'sway';
+  const img = document.createElement('img');
+  img.src = src; img.alt = '';
+  img.style.width = vertical ? '112px' : '164px';
+
+  const dur   = 7.5 + Math.random()*2.5;
+  const swayD = 2.6 + Math.random()*1.2;
+  fall.style.left = (10 + Math.random()*72) + 'vw';
+  fall.style.animationDuration = dur + 's';
+  sway.style.animationDuration = swayD + 's';
+  sway.style.animationDelay = (-Math.random()*swayD) + 's';
+
+  sway.appendChild(img); fall.appendChild(sway);
+  document.getElementById('featherfall').appendChild(fall);
+  fall.addEventListener('animationend', ()=> fall.remove());
+  setTimeout(()=> fall.remove(), (dur+1)*1000);
+}
+
+/* ---------------- the angel appears ---------------- */
+const ENDINGS = [
+  { max:6,  art:'assets/angel-1.png', line:"Few were helped today \u2014 the angel's list is still long." },
+  { max:10, art:'assets/angel-2.png', line:"A kind day's work, though some were left waiting." },
+  { max:12, art:'alive',              line:"Every good deed done \u2014 the angel can rest at last." }
+];
+
+/* keep the pictures warm in the cache so the reveal never stutters */
+['assets/angel-1.png','assets/angel-2.png'].forEach(s=>{ const i=new Image(); i.src=s; });
+
+function finish(){
+  const ending = ENDINGS.find(e => earned <= e.max);
+  document.getElementById('closingLine').textContent = ending.line;
+
+  const finale = document.getElementById('finale');
+  const img    = document.getElementById('angelImg');
+  const anim   = document.getElementById('angelAnim');
+  const voice  = document.getElementById('angelVoice');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* let the last feather and the last chime have their moment first */
+  setTimeout(()=>{
+    finale.classList.add('on');
+    if(ending.art === 'alive') showAlive(); else showPicture(ending.art);
+  }, 1300);
+
+  function showPicture(src){
+    img.src = src;
+    img.classList.add('appear');
+    setTimeout(()=> evaporate(img), reduce ? 900 : 3100);   /* fade in, then vivid for a moment */
+  }
+
+  /* she arrives moving, with her own voice — both run exactly ten seconds */
+  function showAlive(){
+    fadeChime();
+    let fellBack = false;
+    const fallBack = ()=>{
+      if(fellBack || anim.classList.contains('appear')) return;
+      fellBack = true;
+      showPicture('assets/angel-2.png');
+    };
+    const patience = setTimeout(fallBack, 5000);   /* if she never loads, send a picture */
+    anim.onerror = fallBack;
+
+    anim.onload = ()=>{
+      clearTimeout(patience);
+      if(fellBack) return;
+      anim.classList.add('appear');
+
+      const stop = ()=>{ try{ voice.pause(); }catch(e){} };
+      const p = voice.play();
+      if(p && p.catch) p.catch(()=>{               /* the browser held her voice back */
+        const b = document.getElementById('unmute');
+        b.classList.add('on');
+        b.onclick = ()=>{ voice.currentTime = 0; voice.play(); b.classList.remove('on'); };
+      });
+      voice.onended = ()=> evaporate(anim, stop);
+      setTimeout(()=> evaporate(anim, stop), 10400);   /* she fades whether or not sound played */
+    };
+    anim.src = 'assets/angel-alive.webp';
+  }
+}
+
+function evaporate(el, after){
+  if(el.classList.contains('evaporate')) return;
+  el.classList.remove('appear');
+  el.classList.add('evaporate');
+  document.getElementById('unmute').classList.remove('on');
+  const wait = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 700 : 2100;
+  setTimeout(()=>{
+    el.style.display = 'none';
+    document.getElementById('apparition').style.display = 'none';
+    if(after) after();
+    const closing = document.getElementById('closing');
+    closing.classList.add('on');
+    setTimeout(()=> document.getElementById('restart').focus(), 900);
+  }, wait);
+}
+
+function fadeChime(){
+  const a = document.getElementById('chime');
+  clearTimeout(a._fade);
+  const t = setInterval(()=>{
+    a.volume = Math.max(0, a.volume - 0.12);
+    if(a.volume <= 0.01){ clearInterval(t); a.pause(); }
+  }, 50);
+}
+
+document.getElementById('restart').addEventListener('click', ()=> location.reload());
+</script>
+</body>
+</html>
