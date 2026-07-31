@@ -488,20 +488,33 @@ function finish(){
   }
 
   /* she arrives moving, with her own voice — both run exactly ten seconds */
+  /* Eleven or twelve good deeds always earns the moving angel — never a
+     picture, on any screen. If a file is slow she is simply waited for; if
+     one will not load at all, a lighter copy is tried, then her third
+     picture — the same happy angel with the dove. Pictures 1 and 2 belong
+     to the lower scores only. */
   function showAlive(){
     fadeChime();
-    let fellBack = false;
-    const fallBack = ()=>{
-      if(fellBack || anim.classList.contains('appear')) return;
-      fellBack = true;
-      showPicture('assets/angel-2.png');
-    };
-    const patience = setTimeout(fallBack, 5000);   /* if she never loads, send a picture */
-    anim.onerror = fallBack;
+    const phone = Math.min(screen.width, screen.height) < 500;
+    const queue = phone
+      ? ['assets/angel-alive-phone.webp','assets/angel-alive.webp','assets/angel-3.png']
+      : ['assets/angel-alive.webp','assets/angel-alive-phone.webp','assets/angel-3.png'];
 
-    anim.onload = ()=>{
+    let next = 0, arrived = false, patience = 0;
+
+    const tryNext = ()=>{
+      if(arrived) return;
       clearTimeout(patience);
-      if(fellBack) return;
+      if(next >= queue.length){ evaporate(anim); return; }   /* nothing loads: go quietly to the closing line */
+      patience = setTimeout(tryNext, 15000);                 /* still nothing? try a lighter copy of her */
+      anim.src = queue[next++];
+    };
+
+    anim.onerror = tryNext;
+    anim.onload = ()=>{
+      if(arrived) return;
+      arrived = true;
+      clearTimeout(patience);
       anim.classList.add('appear');
 
       const stop = ()=>{ try{ voice.pause(); }catch(e){} };
@@ -514,7 +527,8 @@ function finish(){
       voice.onended = ()=> evaporate(anim, stop);
       setTimeout(()=> evaporate(anim, stop), 10400);   /* she fades whether or not sound played */
     };
-    anim.src = 'assets/angel-alive.webp';
+
+    tryNext();
   }
 }
 

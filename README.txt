@@ -13,6 +13,9 @@ beside it.
   assets/angel-1.png       angel picture 1, cut out
   assets/angel-2.png       angel picture 2, cut out
   assets/angel-alive.webp  the angel video, cut out frame by frame
+  assets/angel-alive-phone.webp  a lighter copy of it for phones
+  assets/angel-3.png       the happy angel with the dove, kept
+                           as a spare in case the video will not load
   assets/angel-voice.m4a   the video's sound
 
 HOW IT PLAYS
@@ -33,6 +36,7 @@ then evaporating again. She is chosen by the score:
   0–6 correct    picture 1
   7–10 correct   picture 2
   11–12 correct  the moving angel, full screen, with the video's sound
+                 (always the video here — never a picture, on any screen)
 
 All three are fully cut out — the white paper is gone from the
 pictures and from every frame of the video, so only the angel herself
