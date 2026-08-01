@@ -97,6 +97,26 @@ h1{
 .tally strong{font-family:var(--display);font-size:1.24rem;color:var(--ink);letter-spacing:.02em}
 .tally svg{width:17px;height:17px;fill:none;stroke:var(--halo);stroke-width:1.5}
 
+/* ---------- worked example ---------- */
+.example{
+  margin:0 0 22px;padding:18px 24px;
+  background:rgba(255,255,255,.42);
+  border:1px dashed rgba(160,190,214,.75);
+  border-radius:22px;
+  font-size:clamp(1.14rem,3vw,1.36rem);
+  line-height:1.9;
+  color:#3d5468;
+}
+.example .tag{
+  display:block;margin-bottom:.15em;
+  font-size:.86rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.example strong{
+  font-weight:700;color:#7a5f24;
+  border-bottom:1.6px solid var(--halo);
+}
+
 /* ---------- deed cards ---------- */
 ol{list-style:none;margin:0;padding:0;display:grid;gap:18px}
 .deed{
@@ -280,6 +300,12 @@ ol{list-style:none;margin:0;padding:0;display:grid;gap:18px}
       <span>Feathers</span> <strong id="count">0</strong> <span>/ 12</span>
     </div>
   </header>
+
+  <p class="example">
+    <span class="tag">Example:</span>
+    Why not help rebuild the <strong>birds&rsquo;</strong> broken nest?
+    <span class="hint">(birds)</span>
+  </p>
 
   <ol id="list"></ol>
 
