@@ -493,7 +493,8 @@ const ENDINGS = [
 
 function finish(){
   const ending = ENDINGS.find(e => earned <= e.max);
-  document.getElementById('closingLine').textContent = ending.line;
+  document.getElementById('closingLine').textContent =
+    earned === 11 ? "Almost all good deeds are done \u2014 you helped the angel a lot." : ending.line;
 
   const finale = document.getElementById('finale');
   const img    = document.getElementById('angelImg');
